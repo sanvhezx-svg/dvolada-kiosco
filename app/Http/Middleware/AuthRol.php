@@ -1,12 +1,14 @@
 <?php
+
 namespace App\Http\Middleware;
+
 use Closure;
+use Illuminate\Http\Request;
+use Symfony\Component\HttpFoundation\Response;
 
-  use Illuminate\Http\requirest;
-
-  class authrol
-  {
-    public function handle(Request $request, Closure $next, string ...$roles)
+class AuthRol
+{
+    public function handle(Request $request, Closure $next, string ...$roles): Response
     {
         if (!session('usuario_id')) {
             return redirect()->route('login');
@@ -18,4 +20,4 @@ use Closure;
 
         return $next($request);
     }
-  }
+}
