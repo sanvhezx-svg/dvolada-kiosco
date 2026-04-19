@@ -3,63 +3,48 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Categoria;
 use Illuminate\Http\Request;
 
 class CategoriaController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        //
+        $categorias = Categoria::orderBy('orden')->get();
+        return view('admin.categorias.index', compact('categorias'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
+    public function create() { return redirect()->route('admin.categorias.index'); }
+    public function show(Categoria $categoria) { return redirect()->route('admin.categorias.index'); }
+    public function edit(Categoria $categoria) { return redirect()->route('admin.categorias.index'); }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
-        //
+        $request->validate(['nombre' => 'required|string|max:100']);
+        Categoria::create([
+            'nombre' => $request->nombre,
+            'icono'  => $request->icono,
+            'orden'  => $request->orden ?? 0,
+            'activo' => true,
+        ]);
+        return back()->with('success', 'Categoría creada correctamente');
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
+    public function update(Request $request, Categoria $categoria)
     {
-        //
+        $request->validate(['nombre' => 'required|string|max:100']);
+        $categoria->update([
+            'nombre' => $request->nombre,
+            'icono'  => $request->icono,
+            'orden'  => $request->orden ?? 0,
+            'activo' => $request->has('activo'),
+        ]);
+        return back()->with('success', 'Categoría actualizada');
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
+    public function destroy(Categoria $categoria)
     {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
+        $categoria->delete();
+        return back()->with('success', 'Categoría eliminada');
     }
 }
