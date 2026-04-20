@@ -33,6 +33,7 @@ Route::middleware('auth.rol:administrador')->prefix('admin')->name('admin.')->gr
 Route::middleware('auth.rol:administrador,cajero')->prefix('kiosco')->name('kiosco.')->group(function () {
     Route::get('/', [KioscoController::class, 'index'])->name('index');
     Route::post('/buscar-vip', [KioscoController::class, 'buscarVip'])->name('kiosco.buscar-vip');
+    Route::post('/crear-orden', [KioscoController::class, 'crearOrden'])->name('kiosco.crear-orden');
 });
 
 // Cocina

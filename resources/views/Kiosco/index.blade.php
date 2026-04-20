@@ -396,9 +396,45 @@
         document.getElementById('btnPagar').disabled = false;
     }
 
-    function irAPagar() {
-        if (carrito.length === 0) return;
-        alert('Módulo de pago — próximo paso 🚀');
+    async function irAPagar() {
+    if (carrito.length === 0) return;
+
+    const btnPagar = document.getElementById('btnPagar');
+    btnPagar.disabled = true;
+    btnPagar.textContent = 'Procesando...';
+
+    try {
+        const res = await fetch('{{ route("kiosco.kiosco.crear-orden") }}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+            },
+            body: JSON.stringify({
+                destino: destino,
+                productos: carrito,
+                total: carrito.reduce((sum, i) => sum + i.precio * i.cantidad, 0),
+                cliente_vip_id: clienteVip ? clienteVip.id : null,
+                metodo_pago: 'terminal'
+            })
+        });
+
+        const data = await res.json();
+
+        if (data.ok) {
+            alert('✅ Orden #' + data.numero_orden + ' enviada a cocina!');
+            volverInicio();
+        } else {
+            alert('Error al crear la orden');
+            btnPagar.disabled = false;
+            btnPagar.textContent = 'Pagar →';
+        }
+    } catch(e) {
+        alert('Error de conexión');
+        btnPagar.disabled = false;
+        btnPagar.textContent = 'Pagar →';
+    }
+
     }
 </script>
 
