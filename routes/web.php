@@ -38,4 +38,5 @@ Route::middleware('auth.rol:administrador,cajero')->prefix('kiosco')->name('kios
 // Cocina
 Route::middleware('auth.rol:administrador,cocina')->prefix('cocina')->name('cocina.')->group(function () {
     Route::get('/', [CocinaController::class, 'index'])->name('index');
+    Route::post('/orden/{orden}/{estado}', [CocinaController::class, 'actualizar'])->name('actualizar');
 });
